@@ -7,6 +7,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"strconv"
 
@@ -21,7 +22,7 @@ var checkCmd = &cobra.Command{
 	Long:  `通过chunkList校验文件完整性`,
 	Run: func(cmd *cobra.Command, args []string) {
 		dir, _ := cmd.Flags().GetString("dir")
-		chunkListPath, err := filepath.Abs(filepath.Join(dir, "chunk.list"))
+		chunkListPath, err := filepath.Abs(path.Join(filepath.FromSlash(dir), "chunk.list"))
 		utils.ErrHandle("无法转化为绝对路径", err)
 		file, err := os.Open(chunkListPath)
 		utils.ErrHandle("无法打开chunk.list文件", err)
@@ -39,7 +40,7 @@ var checkCmd = &cobra.Command{
 			}
 			chunkFileName := line[4 : 4+fileNameLength]
 			expectedHash := line[4+fileNameLength:]
-			abs, err := filepath.Abs(chunkFileName)
+			abs, err := filepath.Abs(filepath.FromSlash(chunkFileName))
 			utils.ErrHandle("转换到绝对路径错误", err)
 			// 计算实际的文件哈希值
 			actualHash, err := utils.GetFileHash(abs)

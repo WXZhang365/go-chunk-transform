@@ -23,9 +23,12 @@ var mergeCmd = &cobra.Command{
 		target, _ := cmd.Flags().GetString("target")
 		output, _ := cmd.Flags().GetString("output")
 		tDAbs, tErr := filepath.Abs(target)
-		tOAbs, oErr := filepath.Abs(output)
+		tDAbs = filepath.FromSlash(tDAbs)
+		tOAbs, oErr := filepath.Abs(path.Join(output))
+		tOAbs = filepath.FromSlash(tOAbs)
 		utils.ErrHandle("无法转化为绝对路径", tErr, oErr)
 		filename := path.Join(tDAbs, "chunk.list")
+
 		channel := make(chan *chunk)
 		flag := make(chan error)
 		go readChunkList(filename, channel)
@@ -36,13 +39,13 @@ var mergeCmd = &cobra.Command{
 				}
 				fmt.Printf("合并文件: %s\n", c.FileName)
 				out, err := os.Create(tOAbs)
-				flag <- err
+				utils.ErrChan(err, flag)
 				defer out.Close()
 				chunk, err := os.Open(c.FileName)
-				flag <- err
+				utils.ErrChan(err, flag)
 				defer chunk.Close()
 				_, err = io.Copy(out, chunk)
-				flag <- err
+				utils.ErrChan(err, flag)
 				chunk.Close()
 			}
 			flag <- nil
