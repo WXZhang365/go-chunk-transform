@@ -33,14 +33,15 @@ var mergeCmd = &cobra.Command{
 		flag := make(chan error)
 		go readChunkList(filename, channel)
 		go func() {
+			out, err := os.Create(tOAbs)
+			utils.ErrChan(err, flag)
+			defer out.Close()
 			for c := range channel {
 				if c == nil {
 					break
 				}
 				fmt.Printf("合并文件: %s\n", c.FileName)
-				out, err := os.Create(tOAbs)
 				utils.ErrChan(err, flag)
-				defer out.Close()
 				chunk, err := os.Open(c.FileName)
 				utils.ErrChan(err, flag)
 				defer chunk.Close()
