@@ -1,4 +1,5 @@
 ### 使用方法:
+
 gctu -h
 
 ```
@@ -13,6 +14,7 @@ Available Commands:
   md5         计算单个文件的hash值
   merge       合并文件
   split       用于将文件切分为对应的块大小
+  serve       启动一个Gin的文件服务器
 
 Flags:
   -h, --help   help for gctu
