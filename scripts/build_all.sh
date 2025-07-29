@@ -9,4 +9,6 @@ zip -j ./dist/gctu_linux_amd64.zip ./dist/gctu
 rm ./dist/gctu
 GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -o ./dist/gctu
 zip -j ./dist/gctu_linux_arm64.zip ./dist/gctu
+GOOS=darwin GOARCH=arm64 CGO_ENABLED=0 go build -o ./dist/gctu
+zip -j ./dist/gctu_darwin_arm64.zip ./dist/gctu
 rm ./dist/gctu
